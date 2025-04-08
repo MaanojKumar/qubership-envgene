@@ -47,23 +47,140 @@ The name of this file serves as the name of the Environment Template. In the Env
 
 ### Tenant Template
 
-TBD
+This object defines the parameters at the tenant level. It contains configuration for a logical grouping (tenant) that can have multiple environments, clouds, or namespaces. below is strututre of Tenant
+
+```yaml
+name: "Field is used to uniquely identify the Tenant"
+refistryName: "Field is used to connect with registry"
+description: "Description of the tenant"
+owners: "Tenant owners"
+gitRepository: "Git repository used for the tenancy"
+credential: "The identifier for credentials used by the deployment"
+labels: "A list of labels that should be applied to the Labels"
+globalE2EParameters: "Section with e2e parameters for Namespace that should be used in e2e pipeline"
+deployParameters: "Section with Deployment parameters for tenacy"
+namespaces:
+     tenant: "<path-to-the-tenant-template-file>"
+```
+
+[Tenant JSON schema](schemas/tenant.schema.json)
+
+Tenant file will be located in the `/templates/env_templates/tenant.yaml.
 
 ### Cloud Template
 
-TBD
+This object contains all the necessary cloud level paramters.
+
+```yaml
+name: "The name of the cloud configuration"
+version number : "The version number of the cloud configuration"
+apiUrl: "The URL of the API endpoint of the cloud"
+apiPort: "The port on which the API runs" 
+privateUrl: "The private-facing URL for internal access"
+publicUrl: "The public-facing URL for external access"
+dashboardUrl: "The URL for accessing the cloud's k8s dashboard"
+labels: "A list of labels for categorizing or tagging the cloud"
+defaultCredentialsId: "The identifier for credentials used by the deployment"
+protocol: "The communication protocol used (https, http)"
+dbMode: "The database mode"
+databases: "A list of database configurations associated with the deployment"
+mergeDeployParametersAndE2EParameters: "Flag indicating whether to merge deployment and end-to-end parameters"
+maasConfig:
+  credentialsId: "Credentials identifier for MaaS"
+  enable: "Flag to enable or disable MaaS"
+  maasUrl: "URL for accessing MaaS"
+  maasInternalAddress: "Internal address for MaaS"
+vaultConfig:
+  credentialsId: "Credentials identifier for the vault"
+  enable: "Flag to enable or disable vault integration"
+  url: "The vault service URL"
+dbaasConfigs:
+  - credentialsId: "Credentials identifier for DBaaS"
+    enable: "Flag to enable or disable DBaaS"
+    apiUrl: "API URL for DBaaS"
+    aggregatorUrl: "URL for the DBaaS aggregator"
+consulConfig:
+  tokenSecret: "Secret token for Consul authentication"
+  enabled: "Flag to enable or disable Consul integration"
+  publicUrl: "The public URL for accessing Consul"
+  internalUrl: "The internal URL for accessing Consul"
+deployParameters: "Parameters related to the deployment process"
+e2eParameters: "E2E Parameters for the cloud"
+technicalConfigurationParameters: "Technical parameters for the cloud"
+deployParameterSets: "A list of deployment parameter sets for the cloud"
+e2eParameterSets: "A list of e2e parameter sets for the cloud"
+technicalConfigurationParameterSets: "A list of technical parameter sets for the cloud"
+```
+[Cloud JSON schema](schemas/cloud.schema.json)
+
+Cloud file will be located in the `/templates/env_templates/cloud.yaml.
 
 ### Namespace Template
 
-TBD
+This object defines parameters at the namespace level
+
+```yaml
+name: "Field is used to uniquely identify the Namespace for the Environment"
+credentialsId: "The identifier for credentials used by the deployment"
+version: "The version number of the namespace configuration"
+isServerSideMerge: "Enables server-side merge of parameters"
+labels: "A list of labels that should be applied to the Namespace in K8s"
+cleanInstallApprovalRequired: "Is approval of clean install required for this namespace"
+mergeDeployParametersAndE2EParameters: "Should deployment parameters be merged with e2e parameters"
+profile:
+  name: "<<filename>> of Resource profile override"
+  baseline: "Baseline name of Resource profile override (dev, dev-ha, prod, prod-nonha)"
+deployParameters: "Section with Deployment parameters for Namespace's applications"
+e2eParameters: "Section with e2e parameters for Namespace that should be used in e2e pipeline"
+technicalConfigurationParameters: "Section with Technical/Admin parameters for Namespace's application"
+deployParameterSets: "Section with list of Deployment parameter sets <<filename>> for Namespace's applications"
+e2eParameterSets: "Section with list of e2e parameter sets <<filename>> for Namespace that should be used in e2e pipeline"
+technicalConfigurationParameterSets: "Section with list of Technical/Admin parameter sets <<filename>> for Namespace's applications"
+---
+[Cloud JSON schema](schemas/namespace.schema.json)
+
+Namespace file will be located in the `/templates/env_templates/.
 
 ### ParameterSet
 
-TBD
+This object represents a container for a group of parameters that can be applied to namespaces or applications
+
+```yaml
+name: "Name of the parameter set"
+version: "Version number of the specific parameter set"
+parameters: "Parameters of the Parameter Set"
+applications:
+  - appName: "Name of the application"
+    parameters: "Application level parameters"
+---
+
+[Cloud JSON schema](schemas/paramset.schema.json)
+
+Paramset file will be located in the `/templates/env_templates/Inventory/.
 
 ### Resource Profile Override (in Template)
 
-TBD
+This object defines resource profile parameters
+
+```yaml
+name: "Name of the resource profile"
+version: "Version of the resource profile"
+baseline: "Baseline from where we override resource profile (dev, prod, prod-nonha, dev-ha)"
+description: "Optional description field to provide brief about the resource profile"
+applications:
+  - name: "Name of the application"
+    version: "Version of the application"
+    sd: "Solution Descriptor"
+    services:
+      - name: "Name of the service"
+        parameters:
+          - name: "Parameter name"
+            value: "Parameter value"
+---
+
+[Cloud JSON schema](schemas/resource-profile.schema.json)
+
+Resource profile file will be located in the `/templates/env_templates/Profile/.
 
 ### Composite Structure Template
 
@@ -120,7 +237,16 @@ TBD
 
 ### Application
 
-TBD
+This object defines application level parameters 
+
+```yaml
+name: "The name of the application"
+deployParameters: "A collection of key-value pairs specifying deployment (to manifest rendering) parameters"
+technicalConfigurationParameters: "A collection of key-value pairs specifying technical configuration (to configure application behavior without redeployment) parameters"
+```
+[Cloud JSON schema](schemas/application-profile.schema.json)
+
+Application file will be located in the `/templates/env_templates/Namespace/Application.
 
 ### Resource Profile Override (in Instance)
 
