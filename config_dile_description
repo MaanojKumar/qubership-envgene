@@ -1,0 +1,152 @@
+Deployer file 
+      This JSON schema defines a configuration object for an app deployer:
+      
+      username
+      Type: String
+      Purpose: Authentication credential for the app deployer
+      Effects of different values:
+        1. When set to a valid username, it allows authentication with the app deployer
+        2. When set to a credential reference, it dynamically retrieves the username from a credential store
+        3. When invalid or empty, authentication will fail
+      
+      token
+      Type: String
+      Purpose: Authentication token or password for the app deployer
+      Effects of different values:
+       1. When set to a valid token, it completes the authentication pair with the username
+       2. When set to a credential reference, it dynamically retrieves the token from a credential store
+       3. When invalid or empty, authentication will fail
+      
+      deployerUrl
+      Type: String (URI format)
+      Purpose: Specifies the endpoint where the app deployer service is running
+      Effects of different values:
+       1. Different URLs point to different environments
+       2. Changing this value redirects deployment requests to a different server instance
+
+      Required Parameter 
+        1. username
+        2. token
+        3. deployerUrl
+
+Credential file
+      This JSON schema defines storing of different types of authentication credentials. 
+      
+      usernamePassword
+      Type:Sring
+      Effects of different values:
+        1. When set to a valid usernamepasswrod, allows proper identification with authentication systems
+        2. When invalid or empty, authentication will fail
+      
+      Secret
+      Type:Sring
+      Effects of different values:
+        1. When set to a valid secret, provides authentication for single-secret systems 
+        2. When invalid or empty, authentication with the target system will fail
+      
+      VaultAppRole
+      Contains below parameters
+        1. roleId
+        2. secretId
+        3. path
+        4. namespace
+      
+      roleId:
+      Effects of different values:
+        1. When set to a valid role ID, identifies the AppRole for credential evaluation
+        2. When invalid, Vault authentication will fail
+      
+      secretId:
+      Effects of different values:
+        1. When set to a valid secret ID, allows authentication with the Vault AppRole
+        2. When invalid, Vault authentication will fail
+      
+      path:
+      Effects of different values:
+        1. When set correctly, locates the credentials in the vault storage
+        2. When incorrect, credential retrieval will fail
+      
+      namespace:
+      Effects of different values:
+        1. When set to /, uses the root namespace
+        2. When empty, uses the global namespace or credential namespace if specified
+        3. When set to a specific value, targets that namespace in Vault
+
+      Required Parameter 
+        1.  roleId
+        2. secretId
+        3. path
+        4. namespace
+
+Config file 
+      This JSON schema defines configuration parameters for managing cryptographic operations, artifact discovery, and cloud passport decryption
+      
+      crypt
+      Type: Boolean
+      Effects of different values:
+        1. When set to true enables all cryptographic operations, allowing encryption and decryption of sensitive data
+        2. When set to false disables cryptographic functionality, which may prevent proper handling of encrypted content
+      
+      crypt_backend
+      Type: String
+      Effects of different values:
+        1. When set to fernet envgene uses the Fernet symmetric encryption library
+        2. When set to SOPS envgene uses Mozilla SOPS (Secrets OPerationS)
+      
+      artifact_definitions_discovery_mode
+      Type: Boolean
+      Effects of different values:
+        1. When set to true forces active discovery of artifact definitions. System will always scan for and attempt to load artifact definitions 
+        2. When set to false disables artifact definition discovery. System will not attempt to discover artifact definitions
+        3. When set to auto enables intelligent discovery based on system context. System determines whether to discover artifacts based on environment
+      
+      cloud_passport_decryption
+      Type: Boolean
+      Effects of different values:
+        1. When set to true enables decryption of cloud passports
+        2. When set to false disables cloud passport decryption
+
+      Required Parameter 
+        None 
+
+Integration file 
+      This JSON schema defines configuration parameters for external system integrations
+      
+      cp_dsicovery
+      Type: Object
+      Purpose: Contains configuration settings for Cloud Passport discovery services, which help locate and retrieve cloud credentials.
+      
+      cp_discovery.gitlab
+      Type: Object
+      Purpose: Specifies GitLab-specific settings for Cloud Passport discovery. Required when when cp_discovery is present
+      
+          cp_discovery.gitlab.branch
+          Type: String
+          Effects of different values:
+            1. When set to "main" or "master": Uses the primary branch of the repository
+            2. When set to a feature branch uses a specific feature branch for development or testing
+            3. When set to "develop" uses the development branch
+      
+          cp_discovery.gitlab.project
+          Type: String
+          Effects of different values:
+            1. Can be set to a project name
+            2. Can be set to a project ID: References the project by its ID
+            3. Different values point to different repositories where Cloud Passport data may be located
+      
+          cp_discovery.gitlab.token
+          Type: String
+          Effects of different values:
+            1. Valid token: Allows access to the specified GitLab project with permissions granted to that token
+            2. Invalid token: Results in authentication failure when attempting to discover Cloud Passports
+      
+          self_token
+          Type: String
+          Effects of different values:
+            1. Valid token: Allows the application to commit changes to the repository, enabling automated updates
+            2. Invalid token: Prevents the application from making commits, limiting automated workflows
+            3. Read-only token: Allows fetching but prevents committing changes
+            4. Token with project write access: Enables full commit functionality
+      
+      Required Parameter
+        1. gitlab
