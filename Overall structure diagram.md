@@ -1,7 +1,7 @@
 ```mermaid
     graph TD
         %% Main Repository Structure
-        RepoSystem["Environment Configuration System"]
+        RepoSystem["EnvGene"]
         EnvInvGit["Environments Inventory Git Repository"]
         TemplatesGit["Templates Git Repository"]
         RenderedEPGit["Rendered Templates/Effective Parameters Git Repository"]
@@ -26,9 +26,9 @@
         Clusters --> ClusterCredentials["Cluster-wide Credentials"]
         Clusters --> ClusterParams["Cluster-wide Parameters"]
         Clusters --> ClusterProfiles["Cluster-wide Resource Profiles"]
-        Clusters --> Environments["Environment Configurations"]
+        Clusters --> Environments["EnvGenes"]
         
-        %% Environment Configurations
+        %% EnvGenes
         Environments --> EnvInventory["Environment Inventory"]
         EnvInventory --> EnvCredentials["Environment-wide Credentials"]
         EnvInventory --> EnvParams["Environment-wide Parameters"]
