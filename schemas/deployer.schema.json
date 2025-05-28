@@ -1,0 +1,26 @@
+"$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "name": {
+          "type": "string",
+          "description": "name for authentication with external CMDB",
+            "additionalProperties": true,
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "Username for authentication with external CMDB"
+                            },
+                "token": {
+                    "type": "string",
+                    "description": "Token for authentication with external CMDB"
+                         },
+                "deployerUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL of external CMDB"
+                               }
+                           },
+            "required": ["username", "token", "deployerUrl"],
+            "additionalProperties": false
+        }
+    },
+    "minProperties": 1
